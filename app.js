@@ -122,12 +122,16 @@ function openLightbox(kind, index) {
       : `<img class="lightbox-media" src="${mediaUrl(item.src)}" alt="${escapeAttr(item.title || "ARTWORK")}" />`;
   const caption = item.caption || "CAPTION PENDING";
   lightboxStage.innerHTML = `
-    <button class="lightbox-nav lightbox-prev" type="button" aria-label="PREVIOUS">‹</button>
+    <button class="lightbox-nav lightbox-prev" type="button" aria-label="PREVIOUS">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4 7 12l8 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" /></svg>
+    </button>
     <figure class="lightbox-figure">
       ${media}
       <figcaption class="lightbox-caption">${escapeHtml(caption)}</figcaption>
     </figure>
-    <button class="lightbox-nav lightbox-next" type="button" aria-label="NEXT">›</button>
+    <button class="lightbox-nav lightbox-next" type="button" aria-label="NEXT">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" /></svg>
+    </button>
   `;
   lightbox.querySelector(".lightbox-prev").addEventListener("click", (event) => {
     event.stopPropagation();

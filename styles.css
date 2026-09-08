@@ -261,7 +261,7 @@ video {
   background: rgba(0, 0, 0, 0.92);
   display: grid;
   place-items: center;
-  padding: 3rem 1.5rem;
+  padding: 3.4rem 4.6rem 2.4rem;
 }
 
 .lightbox[hidden] {
@@ -270,25 +270,23 @@ video {
 
 .lightbox-stage {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 0.6rem 0.8rem;
-  max-width: min(96vw, 1200px);
-  width: 100%;
+  place-items: center;
+  width: min(100%, 1100px);
 }
 
 .lightbox-figure {
   margin: 0;
   display: grid;
   gap: 0.9rem;
-  justify-items: start;
-  min-width: 0;
+  justify-items: center;
+  width: 100%;
 }
 
 .lightbox-stage img,
 .lightbox-stage video {
   max-height: 74vh;
-  max-width: min(84vw, 1100px);
+  max-width: 100%;
+  margin-inline: auto;
   object-fit: contain;
 }
 
@@ -297,25 +295,44 @@ video {
 }
 
 .lightbox-caption {
-  max-width: 38rem;
+  max-width: min(38rem, 100%);
   color: var(--muted);
   font-size: 0.72rem;
   letter-spacing: 0.2em;
   line-height: 1.75;
   text-transform: none;
   cursor: pointer;
+  text-align: center;
 }
 
 .lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 81;
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
   background: none;
   border: 0;
   color: var(--ink);
-  font-family: var(--display);
-  font-size: 3.2rem;
-  line-height: 1;
-  padding: 0.2rem 0.35rem;
+  padding: 0;
   cursor: pointer;
   opacity: 0.55;
+}
+
+.lightbox-nav svg {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.lightbox-prev {
+  left: max(0.75rem, env(safe-area-inset-left, 0px));
+}
+
+.lightbox-next {
+  right: max(0.75rem, env(safe-area-inset-right, 0px));
 }
 
 .lightbox-nav:hover {
@@ -338,5 +355,32 @@ video {
 @media (max-width: 700px) {
   .nav {
     gap: 1.2rem;
+  }
+
+  .lightbox {
+    padding: 3.4rem 3.6rem 1.8rem;
+  }
+
+  .lightbox-prev {
+    left: max(0.85rem, env(safe-area-inset-left, 0px));
+  }
+
+  .lightbox-next {
+    right: max(0.85rem, env(safe-area-inset-right, 0px));
+  }
+
+  .lightbox-nav {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+
+  .lightbox-nav svg {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  .lightbox-stage img,
+  .lightbox-stage video {
+    max-height: 66vh;
   }
 }
