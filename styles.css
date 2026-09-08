@@ -211,16 +211,6 @@ video {
   filter: contrast(1.08) grayscale(0.15);
 }
 
-.card-meta {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.8rem;
-  padding: 0.75rem 0.85rem;
-  font-size: 0.68rem;
-  letter-spacing: 0.22em;
-  color: var(--muted);
-}
-
 .empty {
   border: 1px dashed var(--line);
   padding: 2.4rem 1.4rem;
@@ -278,11 +268,58 @@ video {
   display: none;
 }
 
+.lightbox-stage {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.6rem 0.8rem;
+  max-width: min(96vw, 1200px);
+  width: 100%;
+}
+
+.lightbox-figure {
+  margin: 0;
+  display: grid;
+  gap: 0.9rem;
+  justify-items: start;
+  min-width: 0;
+}
+
 .lightbox-stage img,
 .lightbox-stage video {
-  max-height: 82vh;
-  max-width: min(92vw, 1100px);
+  max-height: 74vh;
+  max-width: min(84vw, 1100px);
   object-fit: contain;
+}
+
+.lightbox-media {
+  cursor: pointer;
+}
+
+.lightbox-caption {
+  max-width: 38rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  line-height: 1.75;
+  text-transform: none;
+  cursor: pointer;
+}
+
+.lightbox-nav {
+  background: none;
+  border: 0;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 3.2rem;
+  line-height: 1;
+  padding: 0.2rem 0.35rem;
+  cursor: pointer;
+  opacity: 0.55;
+}
+
+.lightbox-nav:hover {
+  opacity: 1;
 }
 
 .lightbox-close {

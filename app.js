@@ -31,7 +31,7 @@ function workItems(kind) {
 }
 
 function renderWork(sub) {
-  const kind = sub === "other" ? "other" : "ut";
+  const kind = sub === "videos" ? "videos" : "art";
   setActiveNav("work");
   const items = workItems(kind);
   const cards = items.length
@@ -45,8 +45,8 @@ function renderWork(sub) {
       <div class="section-head">
         <h1 class="section-title">WORK</h1>
         <nav class="subnav" aria-label="Work">
-          <a href="#/work/ut" class="${kind === "ut" ? "is-active" : ""}">UT</a>
-          <a href="#/work/other" class="${kind === "other" ? "is-active" : ""}">OTHER</a>
+          <a href="#/work/art" class="${kind === "art" ? "is-active" : ""}">ART</a>
+          <a href="#/work/videos" class="${kind === "videos" ? "is-active" : ""}">VIDEOS</a>
         </nav>
       </div>
       ${cards}
@@ -61,30 +61,31 @@ function renderWork(sub) {
   });
 }
 
+function mediaUrl(value) {
+  return escapeAttr(encodeURI(value));
+}
+
 function cardMarkup(kind, item, index) {
   const media =
-    kind === "other"
-      ? `<video src="${escapeAttr(item.src)}" ${item.poster ? `poster="${escapeAttr(item.poster)}"` : ""} muted playsinline preload="metadata"></video>`
+    kind === "videos"
+      ? `<video src="${mediaUrl(item.src)}" ${item.poster ? `poster="${mediaUrl(item.poster)}"` : ""} muted playsinline preload="metadata"></video>`
       : item.src
-        ? `<img src="${escapeAttr(item.src)}" alt="${escapeAttr(item.title || "ARTWORK")}" />`
+        ? `<img src="${mediaUrl(item.src)}" alt="${escapeAttr(item.title || "ARTWORK")}" />`
         : `<span>NO FILE</span>`;
 
+  const label = item.title || (kind === "videos" ? "VIDEO" : "ARTWORK");
   return `
-    <button class="card" type="button" data-open="${index}">
+    <button class="card" type="button" data-open="${index}" aria-label="${escapeAttr(label)}">
       <div class="card-media">${media}</div>
-      <div class="card-meta">
-        <span>${escapeHtml(item.title || (kind === "other" ? "VIDEO" : "ARTWORK"))}</span>
-        <span>${kind === "other" ? "PLAY" : "VIEW"}</span>
-      </div>
     </button>
   `;
 }
 
 function emptyMarkup(kind) {
-  if (kind === "other") {
-    return `<p class="empty">DROP ANIMATED ART VIDEOS INTO ASSETS/OTHER AND LIST THEM IN WORKS.JS</p>`;
+  if (kind === "videos") {
+    return `<p class="empty">DROP ANIMATED ART VIDEOS INTO ASSETS/VIDEOS AND LIST THEM IN WORKS.JS</p>`;
   }
-  return `<p class="empty">DROP ART WORKS INTO ASSETS/UT AND LIST THEM IN WORKS.JS</p>`;
+  return `<p class="empty">DROP ART WORKS INTO ASSETS/ART AND LIST THEM IN WORKS.JS</p>`;
 }
 
 function renderContact() {
@@ -100,21 +101,60 @@ function renderContact() {
       </div>
       <div class="contact-item">
         <span class="contact-label">INSTAGRAM</span>
-        <a class="contact-value" href="https://instagram.com/daniiart" target="_blank" rel="noreferrer">@DANIIART</a>
+        <a class="contact-value" href="https://instagram.com/daniiiart" target="_blank" rel="noreferrer">@DANIIIART</a>
       </div>
     </section>
   `;
 }
 
+let lightboxKind = "art";
+let lightboxIndex = 0;
+
 function openLightbox(kind, index) {
-  const item = workItems(kind)[index];
-  if (!item) return;
-  if (kind === "other") {
-    lightboxStage.innerHTML = `<video src="${escapeAttr(item.src)}" controls autoplay playsinline></video>`;
-  } else {
-    lightboxStage.innerHTML = `<img src="${escapeAttr(item.src)}" alt="${escapeAttr(item.title || "ARTWORK")}" />`;
+  const items = workItems(kind);
+  if (!items.length) return;
+  lightboxKind = kind;
+  lightboxIndex = ((index % items.length) + items.length) % items.length;
+  const item = items[lightboxIndex];
+  const media =
+    kind === "videos"
+      ? `<video src="${mediaUrl(item.src)}" controls autoplay playsinline></video>`
+      : `<img class="lightbox-media" src="${mediaUrl(item.src)}" alt="${escapeAttr(item.title || "ARTWORK")}" />`;
+  const caption = item.caption || "CAPTION PENDING";
+  lightboxStage.innerHTML = `
+    <button class="lightbox-nav lightbox-prev" type="button" aria-label="PREVIOUS">‹</button>
+    <figure class="lightbox-figure">
+      ${media}
+      <figcaption class="lightbox-caption">${escapeHtml(caption)}</figcaption>
+    </figure>
+    <button class="lightbox-nav lightbox-next" type="button" aria-label="NEXT">›</button>
+  `;
+  lightbox.querySelector(".lightbox-prev").addEventListener("click", (event) => {
+    event.stopPropagation();
+    stepLightbox(-1);
+  });
+  lightbox.querySelector(".lightbox-next").addEventListener("click", (event) => {
+    event.stopPropagation();
+    stepLightbox(1);
+  });
+  const img = lightboxStage.querySelector(".lightbox-media");
+  if (img) {
+    img.addEventListener("click", (event) => {
+      event.stopPropagation();
+      stepLightbox(1);
+    });
   }
+  const cap = lightboxStage.querySelector(".lightbox-caption");
+  cap.addEventListener("click", (event) => {
+    event.stopPropagation();
+    stepLightbox(1);
+  });
   lightbox.hidden = false;
+}
+
+function stepLightbox(delta) {
+  if (lightbox.hidden) return;
+  openLightbox(lightboxKind, lightboxIndex + delta);
 }
 
 function closeLightbox() {
@@ -146,7 +186,10 @@ lightbox.addEventListener("click", (event) => {
   if (event.target === lightbox) closeLightbox();
 });
 document.addEventListener("keydown", (event) => {
+  if (lightbox.hidden) return;
   if (event.key === "Escape") closeLightbox();
+  if (event.key === "ArrowRight") stepLightbox(1);
+  if (event.key === "ArrowLeft") stepLightbox(-1);
 });
 
 render();
